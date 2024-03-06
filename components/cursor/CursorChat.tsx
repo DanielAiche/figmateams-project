@@ -12,13 +12,25 @@ const CursorChat = ({cursor, cursorState, setCursorState, updateMyPresence}: Cur
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateMyPresence({ message: e.target.value })
     setCursorState({
-      mode: CursorMode.Chat
-      previousMessage: 
+      mode: CursorMode.Chat,
+      previousMessage: null,
+      message: e.target.value,
     })
 
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if(e.key === 'Enter') {
+    setCursorState({
+      mode: CursorMode.Chat,
+      previousMessage: cursorState.message,
+      message: ''
+    })
+  } else if(e.key === 'Escape') {
+    setCursorState({
+      mode: CursorMode.Hidden,
+    })
+  }
 
 
 
@@ -26,7 +38,8 @@ const CursorChat = ({cursor, cursorState, setCursorState, updateMyPresence}: Cur
   return (
     <div className="absolute top-0 left-0" style = {{
       transform: `translatex(${cursor.x}px) translateY(${cursor.y}px)`}}>
-          <>
+        {cursorState.mode === CursorMode.Chat && (
+          <> 
         <CursorSVG color = "#000" />
         <div className="absolute left-2 top-5 bg-blue-500 px-4 py-2 text-sm leading-relaxed text-white rounded-[20px]">
             {cursorState.previousMessage && (
@@ -46,6 +59,7 @@ const CursorChat = ({cursor, cursorState, setCursorState, updateMyPresence}: Cur
             />
         </div>
     </>
+        )} 
          </div>
   )
 }
